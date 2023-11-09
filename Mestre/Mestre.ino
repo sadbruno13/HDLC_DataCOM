@@ -1,3 +1,5 @@
+const int TEMPO_BIT = 3000;
+
 const int vecAddress[8] = {0,1,0,1,0,1,0,1};
 const int flagStart[8] = {0,1,1,1,1,1,1,0};
 const int flagEnd[8] = {0,1,1,1,1,1,1,0};
@@ -89,9 +91,8 @@ void loop() {
     // Exibindo os valores do quadro na porta serial para verificação
     int tamanhoFrame = 8 + 8 + tamanhoMensagem * 8 + 8 + 8 + 8;
     for (int i = 0; i < tamanhoFrame; i++) {
-      Serial.print(quadro[i]);
-      Serial.print(" "); // Adiciona um espaço entre os valores para facilitar a visualização
-      delay(500);
+      Serial.write(quadro[i]);
+      delay(TEMPO_BIT);
     }
 
     free(quadro); // Libera a memória alocada para quadro
