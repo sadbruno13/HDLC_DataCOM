@@ -160,7 +160,6 @@ void printDadosRecebidos(byte ID, byte controlField, String mensagem) {
 }
 
 void EnviarOK(byte endereco, byte controlField, const char* mensagem){
-  
   Serial.write(StartEndFLAG);
   Serial.write(endereco);
   Serial.write(controlField);
@@ -175,7 +174,6 @@ void EnviarOK(byte endereco, byte controlField, const char* mensagem){
 }
 
 void EnviarNOK(byte endereco, byte controlField, const char* mensagem){
-  
   Serial.write(StartEndFLAG);
   Serial.write(endereco);
   Serial.write(controlField);
