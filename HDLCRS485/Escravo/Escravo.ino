@@ -6,6 +6,7 @@ bool flagStartEnd = false;
 // ------------ Endereços Escravos ------------ //
 const byte ID = 1;
 const byte BROADCAST = 3;
+const byte enderecoMestre = 4;
 // -------------------------------------------- //
 
 // -------------- Dados Recebidos --------------- //
@@ -31,9 +32,11 @@ const char* mensagemMestre = "Ola mundo";
 uint16_t FCS;
 // -------------------------------------- //
 
-// -------- Resposta Escravos (ACK/NAK) ------- //
-const byte OK = 0x06;
-const byte NOK = 0x15;
+// -------- Resposta Escravos  ---------- //
+const char* msgOK = "1";
+bool OK = false;
+const char* msgNOK = "2";
+bool NOK = false;
 // ------------------------------------------- //
 
 
@@ -74,10 +77,12 @@ void receberFrame(){
             if(validado){
               printDadosRecebidos(idEscravo, controlField, mensagem);
               //Reenviar confirmação de recebimento correto pro Mestre
+              if(!OK && !NOK){
+                EnviarOK(enderecoMestre, CONTROLFIELD, msgOK);
+              }
             }
             else{
-              //Reenviar confirmação de recebimento incorreto pro Mestre
-              Serial.println("Frame com problema");
+              EnviarNOK(enderecoMestre, CONTROLFIELD, msgNOK);
             }
           }
         }
@@ -152,4 +157,41 @@ void printDadosRecebidos(byte ID, byte controlField, String mensagem) {
   Serial.println(ID);
   Serial.print("Mensagem Recebida: ");
   Serial.println(mensagem);
+}
+
+void EnviarOK(byte endereco, byte controlField, const char* mensagem){
+  
+  Serial.write(StartEndFLAG);
+  Serial.write(endereco);
+  Serial.write(controlField);
+  Serial.write(mensagem);
+  Serial.flush();
+
+  FCS = calculateFCS(controlField, endereco, mensagem);
+  EnviarFCSSerial(FCS); // Por ser 16 bits, necessitou dividir e enviar separadamente
+
+  Serial.write(StartEndFLAG);
+
+}
+
+void EnviarNOK(byte endereco, byte controlField, const char* mensagem){
+  
+  Serial.write(StartEndFLAG);
+  Serial.write(endereco);
+  Serial.write(controlField);
+  Serial.write(mensagem);
+  Serial.flush();
+
+  FCS = calculateFCS(controlField, endereco, mensagem);
+  EnviarFCSSerial(FCS); // Por ser 16 bits, necessitou dividir e enviar separadamente
+
+  Serial.write(StartEndFLAG);
+
+}
+
+void EnviarFCSSerial(uint16_t FCS){
+  uint8_t lsb = FCS & 0xFF;         // byte menos significativo
+  uint8_t msb = (FCS >> 8) & 0xFF;  // byte mais significativo
+  Serial.write(msb); //Envia pelo mais significativo
+  Serial.write(lsb); //Envia o menos significativo
 }
