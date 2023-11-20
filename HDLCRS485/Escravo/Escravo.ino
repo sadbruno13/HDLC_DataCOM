@@ -78,12 +78,17 @@ void receberFrame(){
               printDadosRecebidos(idEscravo, controlField, mensagem);
               //Reenviar confirmação de recebimento correto pro Mestre
               if(!OK && !NOK){
+                delay(2000);
                 EnviarOK(enderecoMestre, CONTROLFIELD, msgOK);
               }
             }
             else{
+              delay(2000);
               EnviarNOK(enderecoMestre, CONTROLFIELD, msgNOK);
             }
+          }
+          else{
+            Serial.end();
           }
         }
         flagStartEnd = false; // Reinicia o processo, pois detectou a Flag de final
@@ -100,7 +105,7 @@ void receberFrame(){
       //Portanto, adicionar um byte a uma string funciona porque a linguagem C++ permite essa conversão automática entre tipos relacionados. Se você estivesse usando um array de bytes (uint8_t), 
       //não precisaria dessa conversão explícita, pois uint8_t e char são tipos de dados equivalentes.
       dadosMensagem += dadoRecebido;
-      Serial.println(dadosMensagem);
+      //Serial.println(dadosMensagem);
     }
     
   }

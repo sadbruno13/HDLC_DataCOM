@@ -66,6 +66,7 @@ void loop() {
     primeiroEnvio = true;
   }
   
+  delay(2000);
   int resposta = esperarResposta();
   switch (resposta) {
     case 1:
@@ -179,6 +180,7 @@ bool receberFrame(){
               bool resultado;
               resultado = ValidarRespostaEscravo(mensagem);
               if(!resultado){
+                segundoEnvio =  true; 
                 Serial.println("Mensagem recebida com Sucesso!!!!");
               }
               else{
